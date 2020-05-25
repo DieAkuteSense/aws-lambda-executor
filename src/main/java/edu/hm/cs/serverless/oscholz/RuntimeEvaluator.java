@@ -23,16 +23,16 @@ public class RuntimeEvaluator {
 	private static final long ONE_HOUR = ONE_MINUTE * 60;
 
 
-	public static void determine(final String lambdaArn) {
+	public static void determine(final String lambdaArn, final Regions awsRegion) {
+		long startTime = System.currentTimeMillis();
+
 		InvokeRequest invokeRequest = new InvokeRequest()
 				.withFunctionName(lambdaArn);
-		InvokeResult invokeResult = null;
-		long startTime = System.currentTimeMillis();
+
 		try {
 			AWSLambda awsLambda = AWSLambdaClientBuilder.standard()
 					.withCredentials(new ProfileCredentialsProvider())
-					.withRegion(Regions.EU_CENTRAL_1)
-					.withRegion(Regions.US_EAST_2)
+					.withRegion(awsRegion)
 					.build();
 
 
@@ -42,7 +42,7 @@ public class RuntimeEvaluator {
 			while (instanceToRecognize.equalsIgnoreCase(instId)) {
 				System.out.println("Current run: " + runCount + "; Sleep-Time: " + getWaitTime(2, runCount) + " minutes");
 				Thread.sleep(getWaitTime(2, runCount) * ONE_MINUTE);
-				invokeResult = awsLambda.invoke(invokeRequest);
+				InvokeResult invokeResult = awsLambda.invoke(invokeRequest);
 				String ans = new String(invokeResult.getPayload().array(), StandardCharsets.UTF_8);
 				Body body = new Gson().fromJson(ans, Body.class);
 
@@ -70,7 +70,7 @@ public class RuntimeEvaluator {
 				System.out.println("Divide&Conquer: Current Wait Time: " + currentWaitTime + " minutes");
 				Thread.sleep((long) currentWaitTime * ONE_MINUTE);
 
-				invokeResult = awsLambda.invoke(invokeRequest);
+				InvokeResult invokeResult = awsLambda.invoke(invokeRequest);
 				String ans = new String(invokeResult.getPayload().array(), StandardCharsets.UTF_8);
 				Body body = new Gson().fromJson(ans, Body.class);
 

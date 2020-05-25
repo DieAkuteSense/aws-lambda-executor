@@ -24,10 +24,12 @@ public class DurableExecutor implements Runnable {
 	private static final int ONE_HOUR = ONE_MINUTE * 60;
 
 	private final String lambdaArn;
+	private final Regions awsRegion;
 	Random rand = new Random();
 
-	public DurableExecutor(String lambdaArn) {
+	public DurableExecutor(final String lambdaArn, final Regions awsRegion) {
 		this.lambdaArn = lambdaArn;
+		this.awsRegion = awsRegion;
 	}
 
 	public void run() {
@@ -38,8 +40,7 @@ public class DurableExecutor implements Runnable {
 		try {
 			AWSLambda awsLambda = AWSLambdaClientBuilder.standard()
 					.withCredentials(new ProfileCredentialsProvider())
-					.withRegion(Regions.EU_CENTRAL_1)
-					.withRegion(Regions.US_EAST_2)
+					.withRegion(awsRegion)
 					.build();
 
 			long startTime = System.currentTimeMillis();

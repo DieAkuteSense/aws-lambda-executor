@@ -22,7 +22,7 @@ public class LifetimeEvaluator {
 	private static final long ONE_MINUTE = ONE_SECOND * 60;
 	private static final long ONE_HOUR = ONE_MINUTE * 60;
 
-	public static void run(final String lambdaArn) {
+	public static void run(final String lambdaArn, final Regions awsRegion) {
 		InvokeRequest invokeRequest = new InvokeRequest()
 				.withFunctionName(lambdaArn);
 		InvokeResult invokeResult = null;
@@ -32,8 +32,7 @@ public class LifetimeEvaluator {
 		try {
 			AWSLambda awsLambda = AWSLambdaClientBuilder.standard()
 					.withCredentials(new ProfileCredentialsProvider())
-					.withRegion(Regions.EU_CENTRAL_1)
-					.withRegion(Regions.US_EAST_2)
+					.withRegion(awsRegion)
 					.build();
 
 			// First invocation: Determine current instance

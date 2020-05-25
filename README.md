@@ -8,8 +8,14 @@ Running on Java 8 and Maven.
 Command Line Arguments
 ---
 * first argument has to be ARN of the AWS Lambda. Lambda has to be in Region EU_CENTRAL_1 or US_EAST_2.
-* second argument has to be one of
+* second argument has to be the AWS Region.
+* third argument has to be one of
     * `-lt`: LifetimeExecutor
     * `-du`: DurableExecutor
     * `-co`: CountedExecutor. Requires one more integer parameter, specifying the number of AWS Lambda calls to do.
     * `-rt`: RuntimeExecutor
+    
+`java -jar <jar-file-name> <arn> <eu-central-1|us-east-2> <-lt|-du|-rt>`
+
+`java -jar <jar-file-name> <arn> <eu-central-1|us-east-2> <-co> <runCount>`
+  

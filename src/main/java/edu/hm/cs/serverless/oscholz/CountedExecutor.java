@@ -20,12 +20,14 @@ import java.util.Random;
 public class CountedExecutor implements Runnable {
 
 	private final String lambdaArn;
+	private final Regions awsRegion;
 	private final int numberOfRuns;
 
 	Random rand = new Random();
 
-	public CountedExecutor(final String lambdaArn, final int numberOfRuns) {
+	public CountedExecutor(final String lambdaArn, final Regions awsRegion, final int numberOfRuns) {
 		this.lambdaArn = lambdaArn;
+		this.awsRegion = awsRegion;
 		this.numberOfRuns = numberOfRuns;
 	}
 
@@ -37,7 +39,8 @@ public class CountedExecutor implements Runnable {
 		try {
 			AWSLambda awsLambda = AWSLambdaClientBuilder.standard()
 					.withCredentials(new ProfileCredentialsProvider())
-					.withRegion(Regions.EU_CENTRAL_1).build();
+					.withRegion(awsRegion)
+					.build();
 
 			for (int i = 0; i < numberOfRuns; i++) {
 				invokeResult = awsLambda.invoke(invokeRequest);

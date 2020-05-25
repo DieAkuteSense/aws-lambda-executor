@@ -1,5 +1,7 @@
 package edu.hm.cs.serverless.oscholz;
 
+import com.amazonaws.regions.Regions;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,37 +23,41 @@ public class App {
 	 */
 	public static void main(String[] args) throws InterruptedException {
 
-		// ARN of AWS Lambda and Evaluator-Type will be read from CLI, so args must have two values (or three, if "-co")
-		if (args.length < 2) {
+		// ARN, AWS Region of AWS Lambda and Evaluator-Type will be read from CLI,
+		// so args must have three values (or four, if "-co")
+		if (args.length < 3) {
 			return;
 		}
 
 		String lambdaArn = args[0];
-		System.out.println("Running on AWS Lamda [" + lambdaArn + "]");
 
-		if ("-lt".equalsIgnoreCase(args[1])) {
+		Regions awsRegion = Regions.fromName(args[1]);
+
+		System.out.println("Running AWS Lambda:\nARN: " + lambdaArn + "\nRegion: " + awsRegion.getName());
+
+		if ("-lt".equalsIgnoreCase(args[2])) {
 			System.out.println("Running LifetimeEvaluator.");
-			LifetimeEvaluator.run(lambdaArn);
+			LifetimeEvaluator.run(lambdaArn, awsRegion);
 		}
 
-		if ("-rt".equalsIgnoreCase(args[1])) {
+		if ("-rt".equalsIgnoreCase(args[2])) {
 			System.out.println("Running RuntimeEvaluator.");
-			RuntimeEvaluator.determine(lambdaArn);
+			RuntimeEvaluator.determine(lambdaArn, awsRegion);
 		}
 
-		if ("-du".equalsIgnoreCase(args[1])) {
+		if ("-du".equalsIgnoreCase(args[2])) {
 			System.out.println("Running DurableExecutor.");
-			Runnable r = new DurableExecutor(lambdaArn);
+			Runnable r = new DurableExecutor(lambdaArn, awsRegion);
 			startAndPrintThread(r);
 		}
 
-		if ("-co".equalsIgnoreCase(args[1])) {
-			if (args[2] == null) {
+		if ("-co".equalsIgnoreCase(args[2])) {
+			if (args[3] == null) {
 				System.out.println("Missing second CLI argument!");
 				return;
 			}
-			System.out.println("Running CountedExecutor (" + args[2] + " runs).");
-			Runnable r = new CountedExecutor(lambdaArn, Integer.parseInt(args[2]));
+			System.out.println("Running CountedExecutor (" + args[3] + " runs).");
+			Runnable r = new CountedExecutor(lambdaArn, awsRegion, Integer.parseInt(args[2]));
 			startAndPrintThread(r);
 		}
 	}
