@@ -1,8 +1,6 @@
 package edu.hm.cs.serverless.oscholz;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,31 +22,35 @@ public class App {
 	public static void main(String[] args) throws InterruptedException {
 
 		// ARN of AWS Lambda and Evaluator-Type will be read from CLI, so args must have two values (or three, if "-co")
-		if (args.length >= 2) {
+		if (args.length < 2) {
 			return;
 		}
 
 		String lambdaArn = args[0];
-
-		List<String> cmdList = Arrays.asList(args);
+		System.out.println("Running on AWS Lamda [" + lambdaArn + "]");
 
 		if ("-lt".equalsIgnoreCase(args[1])) {
+			System.out.println("Running LifetimeEvaluator.");
 			LifetimeEvaluator.run(lambdaArn);
 		}
 
 		if ("-rt".equalsIgnoreCase(args[1])) {
+			System.out.println("Running RuntimeEvaluator.");
 			RuntimeEvaluator.determine(lambdaArn);
 		}
 
 		if ("-du".equalsIgnoreCase(args[1])) {
+			System.out.println("Running DurableExecutor.");
 			Runnable r = new DurableExecutor(lambdaArn);
 			startAndPrintThread(r);
 		}
 
 		if ("-co".equalsIgnoreCase(args[1])) {
 			if (args[2] == null) {
+				System.out.println("Missing second CLI argument!");
 				return;
 			}
+			System.out.println("Running CountedExecutor (" + args[2] + " runs).");
 			Runnable r = new CountedExecutor(lambdaArn, Integer.parseInt(args[2]));
 			startAndPrintThread(r);
 		}
@@ -58,7 +60,7 @@ public class App {
 	 * Start a thread with the given runnable and print information about visited Lambda VMs and Instances.
 	 *
 	 * @param r Runnable to execute, {@link CountedExecutor} or {@link DurableExecutor}
-	 * @throws InterruptedException
+	 * @throws InterruptedException Thread could throw this...
 	 */
 	private static void startAndPrintThread(final Runnable r) throws InterruptedException {
 		Thread t = new Thread(r);
