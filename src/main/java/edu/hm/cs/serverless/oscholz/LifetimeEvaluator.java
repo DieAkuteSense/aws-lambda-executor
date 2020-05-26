@@ -22,7 +22,7 @@ public class LifetimeEvaluator {
 	private static final long ONE_MINUTE = ONE_SECOND * 60;
 	private static final long ONE_HOUR = ONE_MINUTE * 60;
 
-	public static void run(final String lambdaArn, final Regions awsRegion) {
+	public static void run(final String lambdaArn, final Regions awsRegion, final int pollingInterval) {
 		InvokeRequest invokeRequest = new InvokeRequest()
 				.withFunctionName(lambdaArn);
 		InvokeResult invokeResult = null;
@@ -49,7 +49,7 @@ public class LifetimeEvaluator {
 
 			do {
 				visited++;
-				Thread.sleep(ONE_MINUTE * 8);
+				Thread.sleep(ONE_MINUTE * pollingInterval);
 
 				invokeResult = awsLambda.invoke(invokeRequest);
 				Gson repGson = new Gson();

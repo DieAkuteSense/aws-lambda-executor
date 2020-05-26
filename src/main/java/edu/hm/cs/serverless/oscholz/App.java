@@ -36,8 +36,12 @@ public class App {
 		System.out.println("Running AWS Lambda:\nARN: " + lambdaArn + "\nRegion: " + awsRegion.getName());
 
 		if ("-lt".equalsIgnoreCase(args[2])) {
-			System.out.println("Running LifetimeEvaluator.");
-			LifetimeEvaluator.run(lambdaArn, awsRegion);
+			if (args[3] == null) {
+				System.out.println("Missing CLI argument!");
+				return;
+			}
+			System.out.println("Running LifetimeEvaluator (polling interval: " + args[3] + ").");
+			LifetimeEvaluator.run(lambdaArn, awsRegion, Integer.parseInt(args[3]));
 		}
 
 		if ("-rt".equalsIgnoreCase(args[2])) {
@@ -53,7 +57,7 @@ public class App {
 
 		if ("-co".equalsIgnoreCase(args[2])) {
 			if (args[3] == null) {
-				System.out.println("Missing second CLI argument!");
+				System.out.println("Missing CLI argument!");
 				return;
 			}
 			System.out.println("Running CountedExecutor (" + args[3] + " runs).");

@@ -64,8 +64,8 @@ public class RuntimeEvaluator {
 			double maxWaitTimeInMinutes = getWaitTime(2, runCount);
 			double minWaitTimeInMinutes = getWaitTime(2, runCount - 1);
 
-			String currentInstance = null;
-			while ((maxWaitTimeInMinutes - minWaitTimeInMinutes) > 2) {
+			String currentInstance;
+			while ((maxWaitTimeInMinutes - minWaitTimeInMinutes) > 1) {
 				double currentWaitTime = (minWaitTimeInMinutes + maxWaitTimeInMinutes) / 2;
 				System.out.println("Divide&Conquer: Current Wait Time: " + currentWaitTime + " minutes");
 				Thread.sleep((long) currentWaitTime * ONE_MINUTE);
@@ -82,8 +82,8 @@ public class RuntimeEvaluator {
 					maxWaitTimeInMinutes = currentWaitTime;
 				}
 
-				if ((maxWaitTimeInMinutes - minWaitTimeInMinutes) <= 2) {
-					System.out.println("Min and max wait time diff <= 2 minutes. Current wait time: " + currentWaitTime
+				if ((maxWaitTimeInMinutes - minWaitTimeInMinutes) <= 1) {
+					System.out.println("Min and max wait time diff <= 1 minutes. Current wait time: " + currentWaitTime
 							+ " minutes. Exiting...");
 				}
 			}
